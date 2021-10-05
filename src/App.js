@@ -1,10 +1,11 @@
+import React, { useState } from 'react';
 import Expenses from "./components/Expenses";
 import NewExpense from "./components/NewExpense/NewExpense";
 
 let zus_amount = 381.81;
 let pit_amount = 2371;
 
-const expenses = [
+const INITIAL_EXPENSES = [
   {
     id: "e1",
     title: "ZUS",
@@ -22,7 +23,7 @@ const expenses = [
     title: "ZUS + PIT",
     amount: zus_amount + pit_amount,
     date: new Date(2021, 2, 28),
-  },
+  }, 
   {
     id: "e4",
     title: "Accounting",
@@ -31,10 +32,25 @@ const expenses = [
   },
 ];
 
-function App() {
+const App = () => {
+  const [expenses, setExpenses] = useState(INITIAL_EXPENSES);
+
+  const addExpenseHandler = newExpenseData => {
+    const index = expenses.findIndex(expense => expense.id === newExpenseData.id);
+    
+    if(index >= 0 ) {
+      const updatedArray = (expenses[index] = newExpenseData)
+      setExpenses(updatedArray);
+    } else {
+      setExpenses((prevExpenses) => {
+        return [newExpenseData, ...prevExpenses];
+      })
+    }
+  }
+
   return (
     <div>
-      <NewExpense></NewExpense>
+      <NewExpense onAddExpense={addExpenseHandler}/>
       <Expenses expenses={expenses} />
     </div>
   );
